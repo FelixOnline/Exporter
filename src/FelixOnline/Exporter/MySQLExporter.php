@@ -111,7 +111,7 @@ class MySQLExporter
                 $result = $this->db->query($sql);
                 $num_results = $result->num_rows;
 
-                $return .= 'INSERT INTO '.$table.' VALUES ';
+                $return = 'INSERT INTO '.$table.' VALUES ';
                 $inserts = [];
                 while($row = $result->fetch_assoc()) {
                     $row = $this->processRow($row, $table);
@@ -138,8 +138,11 @@ class MySQLExporter
                     $insert .= ")";
                     $inserts[] = $insert;
                 }
-                $return .= implode(",\n", $inserts) . ";\n";
-                $this->save($return);
+
+                if (!empty($inserts)) {
+                    $return .= implode(",\n", $inserts) . ";\n";
+                    $this->save($return);
+                }
             }
 
             $return .= "\n\n\n";
