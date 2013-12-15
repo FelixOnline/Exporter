@@ -6,7 +6,6 @@ class Exporter
 {
     protected $config;
     protected $db;
-    protected $tables;
     private $required = array(
         'db_name',
         'db_user',
@@ -51,9 +50,9 @@ class Exporter
     }
 
     /**
-     * Run export
+     * Get tables
      */
-    public function run()
+    protected function getTables()
     {
         if (!array_key_exists('tables', $this->config)) {
             $tables = array();
@@ -64,6 +63,15 @@ class Exporter
         } else {
             $tables = is_array($this->config['tables']) ? $this->config['tables'] : explode(',', $this->config['tables']);
         }
+        return $tables;
+    }
+
+    /**
+     * Run export
+     */
+    public function run()
+    {
+        $tables = $this->getTables();
 
         $return = "SET FOREIGN_KEY_CHECKS = 0;\n\n\n";
         $this->save($return);
@@ -186,9 +194,6 @@ class Exporter
      */
     protected function processTable($table)
     {
-        if ($table == 'article_visit') {
-            return false;
-        }
         return $table;
     }
 
