@@ -8,7 +8,7 @@ Add this to your `composer.json`
     
     {
         "require": {
-            "felixonline/exporter": "0.*"
+            "felixonline/exporter": "0.1.*"
         }
     }
 
