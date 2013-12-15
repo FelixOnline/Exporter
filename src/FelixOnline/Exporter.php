@@ -80,18 +80,18 @@ class Exporter
         foreach($tables as $table) {
             $return = "";
 
-            // TODO process table
+            $return .= 'DROP TABLE IF EXISTS '.$table.';';
+            $row2 = $this->db->query('SHOW CREATE TABLE '.$table)->fetch_row();
+            $return .= "\n\n".$row2[1].";\n\n";
+            $this->save($return);
+
+            // process table
             $check = $this->processTable($table);
 
             // skip table
             if ($check == false) {
                 continue;
             }
-
-            $return .= 'DROP TABLE IF EXISTS '.$table.';';
-            $row2 = $this->db->query('SHOW CREATE TABLE '.$table)->fetch_row();
-            $return .= "\n\n".$row2[1].";\n\n";
-            $this->save($return);
 
             $columns = array();
             $res = $this->db->query('SHOW COLUMNS FROM ' . $table);
