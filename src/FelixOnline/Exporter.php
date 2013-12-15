@@ -11,7 +11,6 @@ class Exporter
         'db_name',
         'db_user',
         'db_pass',
-        'file',
     );
 
     protected $types = array(
@@ -22,7 +21,13 @@ class Exporter
     function __construct($config)
     {
         $this->checkRequired($config);
-        $this->config = $config + array();
+        $this->config = $config + array(
+            'file' => $config['db_name'] . '.sql',
+        );
+
+        if (file_exists($this->config['file'])) {
+            unlink($this->config['file']);
+        }
 
         $this->db = new mysqli(
             array_key_exists('db_host', $this->config) ? $this->config['db_host'] : "localhost",
