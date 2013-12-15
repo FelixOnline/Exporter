@@ -30,7 +30,7 @@ class MySQLExporter
             unlink($this->config['file']);
         }
 
-        $this->db = new mysqli(
+        $this->db = new \mysqli(
             array_key_exists('db_host', $this->config) ? $this->config['db_host'] : "localhost",
             $this->config['db_user'],
             $this->config['db_pass'],
