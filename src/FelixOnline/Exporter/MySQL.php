@@ -2,7 +2,7 @@
 /**
  * Database exporter
  */
-class Exporter
+class MySQLExporter
 {
     protected $config;
     protected $db;
