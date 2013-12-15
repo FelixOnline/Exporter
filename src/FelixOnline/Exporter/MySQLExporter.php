@@ -1,4 +1,6 @@
 <?php
+namespace FelixOnline\Exporter;
+
 /**
  * Database exporter
  */
