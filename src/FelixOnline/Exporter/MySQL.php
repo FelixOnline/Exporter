@@ -134,13 +134,14 @@ class MySQLExporter
                         $x++;
                     }
 
-                    if ($y < ($num_results - 1)) {
-                        $return .= "),\n";
-                    } else {
-                        $return .= ");\n";
-                    }
+                    $return .= ")";
+
                     $y++;
+                    if ($y < $num_results) {
+                        $return .= ",\n";
+                    }
                 }
+                $return .= ";\n";
                 $this->save($return);
             }
 
