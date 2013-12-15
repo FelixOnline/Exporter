@@ -112,38 +112,33 @@ class MySQLExporter
                 $num_results = $result->num_rows;
 
                 $return .= 'INSERT INTO '.$table.' VALUES ';
-                $y = 0;
+                $inserts = [];
                 while($row = $result->fetch_assoc()) {
                     $row = $this->processRow($row, $table);
 
                     // skip row
                     if ($row == false) {
-                        $y++;
                         continue;
                     }
 
-                    $return .= '(';
+                    $insert = '(';
                     $x = 0;
                     foreach($row as $key => $field) {
                         $field = addslashes($field);
                         $field = preg_replace("/\n/", "\\n", $field);
 
-                        $return .= $this->getInsert($key, $field, $columns);
+                        $insert .= $this->getInsert($key, $field, $columns);
 
                         if ($x < (count($row) - 1)) {
-                            $return .= ',';
+                            $insert .= ',';
                         }
                         $x++;
                     }
 
-                    $return .= ")";
-
-                    $y++;
-                    if ($y < $num_results) {
-                        $return .= ",\n";
-                    }
+                    $insert .= ")";
+                    $inserts[] = $insert;
                 }
-                $return .= ";\n";
+                $return .= implode(",\n", $inserts) . ";\n";
                 $this->save($return);
             }
 
