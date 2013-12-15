@@ -11,6 +11,7 @@ class Exporter
         'db_name',
         'db_user',
         'db_pass',
+        'file',
     );
 
     protected $types = array(
@@ -58,8 +59,6 @@ class Exporter
         } else {
             $tables = is_array($this->config['tables']) ? $this->config['tables'] : explode(',', $this->config['tables']);
         }
-
-        $this->filename = 'db-backup-'.time().'-'.(md5(implode(',',$tables))).'.sql';
 
         $return = "SET FOREIGN_KEY_CHECKS = 0;\n\n\n";
         $this->save($return);
@@ -158,7 +157,6 @@ class Exporter
                 break;
             }
         }
-
         switch ($type) {
             case "int":
                 return $field;
@@ -174,7 +172,7 @@ class Exporter
      */
     public function save(&$content)
     {
-        file_put_contents($this->filename, $content, FILE_APPEND);
+        file_put_contents($this->config['file'], $content, FILE_APPEND);
         $content = "";
     }
 
