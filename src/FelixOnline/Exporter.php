@@ -112,7 +112,7 @@ class Exporter
                 $return .= 'INSERT INTO '.$table.' VALUES ';
                 $y = 0;
                 while($row = $result->fetch_assoc()) {
-                    $row = $this->processRow($row);
+                    $row = $this->processRow($row, $table);
 
                     // skip row
                     if ($row == false) {
@@ -200,7 +200,7 @@ class Exporter
     /**
      * Process row
      */
-    protected function processRow($row)
+    protected function processRow($row, $table)
     {
         return $row;
     }
