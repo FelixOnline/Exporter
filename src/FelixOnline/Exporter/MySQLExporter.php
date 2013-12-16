@@ -159,7 +159,7 @@ class MySQLExporter
     private function getInsert($key, $field, $columns) {
         $column = $columns[$key];
 
-        if (!$field && $column['Null'] == 'YES') {
+        if (!isset($field) && $column['Null'] == 'YES') {
             return 'NULL';
         }
 
