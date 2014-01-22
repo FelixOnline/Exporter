@@ -178,6 +178,9 @@ class MySQLExporter
             case "string":
                 return '"'.$field.'"';
                 break;
+            default:
+                return '"'.$field.'"';
+                break;
         }
     }
 
