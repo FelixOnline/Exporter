@@ -142,6 +142,8 @@ class MySQLExporter
                 if (!empty($inserts)) {
                     $return .= implode(",\n", $inserts) . ";\n";
                     $this->save($return);
+                } else {
+                    $return = '';
                 }
             }
 
