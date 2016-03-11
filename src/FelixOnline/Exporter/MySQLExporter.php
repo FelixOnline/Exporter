@@ -90,60 +90,58 @@ class MySQLExporter
             // process table
             $check = $this->processTable($table);
 
-            // skip table
-            if ($check == false) {
-                continue;
-            }
-
             $columns = array();
             $res = $this->db->query('SHOW COLUMNS FROM ' . $table);
             while($row = $res->fetch_assoc()) {
                 $columns[$row['Field']] = $row;
             }
 
-            $num_fields = $this->db->query('SELECT COUNT(*) FROM ' . $table)->fetch_row()[0];
+            // skip table
+            if ($check != false) {
+                $num_fields = $this->db->query('SELECT COUNT(*) FROM ' . $table)->fetch_row()[0];
 
-            $page_size = 500;
-            $pages = ceil($num_fields / $page_size);
+                $page_size = 500;
+                $pages = ceil($num_fields / $page_size);
 
-            for ($i = 0; $i < $pages; $i++) {
-                $sql = "SELECT * FROM " . $table . " LIMIT " . $i * $page_size . ", " . $page_size;
-                $result = $this->db->query($sql);
-                $num_results = $result->num_rows;
+                for ($i = 0; $i < $pages; $i++) {
+                    $sql = "SELECT * FROM " . $table . " LIMIT " . $i * $page_size . ", " . $page_size;
+                    $result = $this->db->query($sql);
+                    $num_results = $result->num_rows;
 
-                $return = 'INSERT INTO '.$table.' VALUES ';
-                $inserts = [];
-                while($row = $result->fetch_assoc()) {
-                    $row = $this->processRow($row, $table);
+                    $return = 'INSERT INTO '.$table.' VALUES ';
+                    $inserts = [];
+                    while($row = $result->fetch_assoc()) {
+                        $row = $this->processRow($row, $table);
 
-                    // skip row
-                    if ($row == false) {
-                        continue;
-                    }
-
-                    $insert = '(';
-                    $x = 0;
-                    foreach($row as $key => $field) {
-                        $field = addslashes($field);
-                        $field = preg_replace("/\n/", "\\n", $field);
-
-                        $insert .= $this->getInsert($key, $field, $columns);
-
-                        if ($x < (count($row) - 1)) {
-                            $insert .= ',';
+                        // skip row
+                        if ($row == false) {
+                            continue;
                         }
-                        $x++;
+
+                        $insert = '(';
+                        $x = 0;
+                        foreach($row as $key => $field) {
+                            $field = addslashes($field);
+                            $field = preg_replace("/\n/", "\\n", $field);
+
+                            $insert .= $this->getInsert($key, $field, $columns);
+
+                            if ($x < (count($row) - 1)) {
+                                $insert .= ',';
+                            }
+                            $x++;
+                        }
+
+                        $insert .= ")";
+                        $inserts[] = $insert;
                     }
 
-                    $insert .= ")";
-                    $inserts[] = $insert;
-                }
-
-                if (!empty($inserts)) {
-                    $return .= implode(",\n", $inserts) . ";\n";
-                    $this->save($return);
-                } else {
-                    $return = '';
+                    if (!empty($inserts)) {
+                        $return .= implode(",\n", $inserts) . ";\n";
+                        $this->save($return);
+                    } else {
+                        $return = '';
+                    }
                 }
             }
 
