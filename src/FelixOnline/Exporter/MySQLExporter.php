@@ -76,6 +76,8 @@ class MySQLExporter
         $tables = $this->getTables();
 
         $return = "SET FOREIGN_KEY_CHECKS = 0;\n\n\n";
+        $return .= "SET sql_mode='NO_AUTO_VALUE_ON_ZERO';\n\n\n";
+        
         $this->save($return);
 
         // cycle through
